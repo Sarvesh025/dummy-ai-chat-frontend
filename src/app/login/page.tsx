@@ -7,11 +7,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import Header from "../../components/Header";
-import { Search, Plus, Trash2, Send, Upload, Copy, Moon, Sun, LogOut, Phone, MessageCircle, Bot, User, Check, X } from 'lucide-react';
 import DarkModeToggle from "../../components/DarkModeToggle";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { MessageCircle } from 'lucide-react';
+
 const phoneSchema = z.object({
   country: z.string().min(1, "Select a country"),
   phone: z
@@ -26,9 +24,15 @@ const otpSchema = z.object({
   otp: z.string().length(6, "OTP must be 6 digits"),
 });
 
+interface Country {
+  name: string;
+  code: string;
+  flag?: string;
+}
+
 export default function LoginPage() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
-  const [countryList, setCountryList] = useState<any[]>([]);
+  const [countryList, setCountryList] = useState<Country[]>([]);
   const [loading, setLoading] = useState(false);
   const [phoneData, setPhoneData] = useState<{ country: string; phone: string } | null>(null);
   const [generatedOtp, setGeneratedOtp] = useState<string>("");
@@ -38,28 +42,28 @@ export default function LoginPage() {
   useEffect(() => {
     axios.get("https://restcountries.com/v3.1/all?fields=name,idd,flags")
       .then((res) => {
-        const countries = res.data
-          .map((c: any) => ({
+        const countries: Country[] = res.data
+          .map((c: { name: { common: string }; idd?: { root?: string; suffixes?: string[] }; flags?: { svg?: string } }) => ({
             name: c.name.common,
             code: c.idd?.root ? c.idd.root + (c.idd.suffixes?.[0] || "") : "",
             flag: c.flags?.svg,
           }))
-          .filter((c: any) => c.code);
-        setCountryList(countries.sort((a: any, b: any) => a.name.localeCompare(b.name)));
+          .filter((c: Country) => c.code);
+        setCountryList(countries.sort((a, b) => a.name.localeCompare(b.name)));
       })
       .catch(() => toast.error("Failed to fetch country data"));
   }, []);
 
-  const phoneForm = useForm({
+  const phoneForm = useForm<{ country: string; phone: string }>({
     resolver: zodResolver(phoneSchema),
     defaultValues: { country: "", phone: "" },
   });
-  const otpForm = useForm({
+  const otpForm = useForm<{ otp: string }>({
     resolver: zodResolver(otpSchema),
     defaultValues: { otp: "" },
   });
 
-  const handlePhoneSubmit = (data: any) => {
+  const handlePhoneSubmit = (data: { country: string; phone: string }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -72,7 +76,7 @@ export default function LoginPage() {
     }, 1200);
   };
 
-  const handleOtpSubmit = (data: any) => {
+  const handleOtpSubmit = (data: { otp: string }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);

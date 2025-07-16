@@ -2,8 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { ChatroomProvider, useChatroom } from "@/context/ChatroomContext";
+import { useChatroom } from "@/context/ChatroomContext";
 import { Copy } from 'lucide-react';
+import Image from "next/image";
 
 interface Message {
   id: string;
@@ -56,8 +57,8 @@ export default function ChatroomPage() {
     // On mount, load the latest PAGE_SIZE messages
     const all = getMessages(chatroomId);
     // Get chatroom title from localStorage
-    const chatrooms = JSON.parse(localStorage.getItem("chatrooms") || "[]");
-    const found = chatrooms.find((c: any) => c.id === chatroomId);
+    const chatrooms: { id: string; title: string }[] = JSON.parse(localStorage.getItem("chatrooms") || "[]");
+    const found = chatrooms.find((c) => c.id === chatroomId);
     setSelectedChatroom(found ? { id: found.id, title: found.title } : { id: chatroomId, title: `Chatroom ${chatroomId}` });
     if (all.length > PAGE_SIZE) {
       setMessages(all.slice(-PAGE_SIZE));
@@ -211,7 +212,7 @@ export default function ChatroomPage() {
         {image && (
           <div className="absolute right-2 -top-20 flex flex-col items-end z-10">
             <div className="relative">
-              <img src={image} alt="Preview" className="w-16 h-16 object-cover rounded border shadow" />
+              <Image src={image} alt="Preview" width={64} height={64} className="w-16 h-16 object-cover rounded border shadow" />
               <button
                 type="button"
                 onClick={() => setImage(null)}

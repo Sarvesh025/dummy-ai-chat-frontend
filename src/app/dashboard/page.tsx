@@ -6,6 +6,7 @@ import { LogOut, MessageCircle } from 'lucide-react';
 import DarkModeToggle from "../../components/DarkModeToggle";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Chatroom {
   id: string;
@@ -153,7 +154,7 @@ export default function DashboardPage() {
                   style={{ textDecoration: 'none' }}
                   aria-label={`Open chatroom ${c.title}`}
                 >
-                  <img src="/window.svg" alt="Chatroom" className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-400 p-2" />
+                  <Image src="/window.svg" alt="Chatroom" width={48} height={48} className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-400 p-2" />
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-lg truncate text-gray-900 dark:text-white">{c.title}</div>
                     <div className="text-gray-500 text-sm truncate dark:text-gray-300">Chatroom ID: {c.id}</div>

@@ -2,8 +2,8 @@
 import DarkModeToggle from "./DarkModeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Plus, Trash2, Send, Upload, Copy, Moon, Sun, LogOut, Phone, MessageCircle, Bot, User, Check, X } from 'lucide-react';
-import { ChatroomProvider, useChatroom } from "@/context/ChatroomContext";
+import { LogOut, MessageCircle } from 'lucide-react';
+import { useChatroom } from "@/context/ChatroomContext";
 
 export default function Header() {
   const pathname = usePathname();
@@ -45,7 +45,7 @@ export default function Header() {
               ←
             </Link>
             <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
+              <MessageCircle className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="font-semibold text-gray-900 dark:text-white">{selectedChatroom?.title}</h1>
